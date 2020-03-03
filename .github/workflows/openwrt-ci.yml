@@ -10,12 +10,22 @@
 name: OpenWrt-CI-lanky
 
 on:
-  schedule:
-    - cron: 0 20 * * *
-      
+  # schedule:
+  #  - cron: 0 20 * * *
+
   push:
     branches: 
       - master
+
+env:
+  # REPO_URL: https://github.com/coolsnowwolf/lede
+  # REPO_BRANCH: master
+  # CONFIG_FILE: .config
+  # DIY_SH: diy.sh
+  SSH_ACTIONS: false
+  # UPLOAD_BIN_DIR: false
+  # UPLOAD_FIRMWARE: true
+  TZ: Asia/Shanghai
 
 jobs:
 
@@ -57,8 +67,10 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: Generate configuration file
-        run: make menuconfig
+      - name: Generate configuration file by SSH
+        # run: make menuconfig
+        uses: P3TERX/debugger-action@master
+        if: env.SSH_ACTIONS == 'true'
 
       - name: Make download
         run: |
